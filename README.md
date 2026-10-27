@@ -48,8 +48,9 @@ APK 输出：`app/build/outputs/apk/debug/app-debug.apk`。
 ## 开发说明
 
 - `ModuleMain` 中的 `TARGET_PACKAGE`、`scope.list`、`libs.versions.toml` 中的目标信息保持一致。
-- `BlurrrHooker#install` 里已接入 DexKit（`System.loadLibrary("dexkit")` + `DexKitBridge.create(apkPath)`），
-  目前只做了示例性的类搜索，实际 hook 逻辑在 TODO 处补充。
+- `BlurrrHooker#install` 里已接入 DexKit（`System.loadLibrary("dexkit")` + `DexKitBridge.create(apkPath)`），用于确认 dex 解析链路正常。
+- 已实现的第一个 hook：`ai.blurrr.video.MainActivity#onCreate(Bundle)`，原方法执行完后弹出 Toast `Module loaded`。
+  后续 hook 按同样方式写在 `BlurrrHooker` 中即可。
 - 未开启 `autoHotReload`，如需热重载请实现 `onHotReloaded` 并同步修改 `module.prop`。
 - 发布版开启了 R8（`minifyEnabled` / `shrinkResources`），ProGuard 规则见 `app/proguard-rules.pro`。
 
