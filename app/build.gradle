@@ -1,0 +1,56 @@
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+android {
+    namespace = 'com.wtbruh.blurrr'
+    compileSdk = 37
+    buildToolsVersion = '37.0.0'
+
+    defaultConfig {
+        applicationId = 'com.wtbruh.blurrr'
+        minSdk = 26
+        targetSdk = 37
+        versionCode = 1
+        versionName = '1.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled = true
+            shrinkResources = true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    packaging {
+        // 让 libdexkit.so 以可解压方式打进 APK，模块被注入目标进程后才能被加载
+        jniLibs {
+            useLegacyPackaging = true
+        }
+        resources {
+            excludes += [
+                    'META-INF/LICENSE*',
+                    'META-INF/NOTICE*',
+                    'META-INF/*.version',
+                    'META-INF/*.kotlin_module',
+            ]
+        }
+    }
+
+    lint {
+        abortOnError = false
+        checkReleaseBuilds = false
+    }
+}
+
+dependencies {
+    // 运行时由框架提供，不能打包进 APK
+    compileOnly libs.libxposed.api
+    implementation libs.dexkit
+}
