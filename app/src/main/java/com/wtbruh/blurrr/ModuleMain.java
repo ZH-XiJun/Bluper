@@ -9,7 +9,7 @@ import io.github.libxposed.api.XposedModule;
  */
 public final class ModuleMain extends XposedModule {
 
-    static final String TAG = "BlurrrHooker";
+    static final String TAG = "Bluper";
 
     /**
      * 被 hook 的目标应用，需与 META-INF/xposed/scope.list 保持一致。

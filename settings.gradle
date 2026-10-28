@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = 'BlurrrHooker'
+rootProject.name = 'Bluper'
 include ':app'

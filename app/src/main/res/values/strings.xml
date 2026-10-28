@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">BlurrrHooker</string>
-    <string name="module_description">ai.blurrr.video 的 Xposed 模块</string>
+    <string name="app_name">Bluper</string>
+    <string name="module_description">帮助用户稍微体验一下Blurrr的SVIP功能。记得24小时内删除哦</string>
 </resources>
