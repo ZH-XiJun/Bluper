@@ -14,3 +14,6 @@ local.properties
 # 签名文件
 *.jks
 *.keystore
+
+# 反编译产物（仅用于分析，不入库）
+/smali/

@@ -49,8 +49,11 @@ APK 输出：`app/build/outputs/apk/debug/app-debug.apk`。
 
 - `ModuleMain` 中的 `TARGET_PACKAGE`、`scope.list`、`libs.versions.toml` 中的目标信息保持一致。
 - `BlurrrHooker#install` 里已接入 DexKit（`System.loadLibrary("dexkit")` + `DexKitBridge.create(apkPath)`），用于确认 dex 解析链路正常。
-- 已实现的第一个 hook：`ai.blurrr.video.MainActivity#onCreate(Bundle)`，原方法执行完后弹出 Toast `Module loaded`。
-  后续 hook 按同样方式写在 `BlurrrHooker` 中即可。
+- 已实现的 hook：
+  - `ai.blurrr.video.MainActivity#onCreate(Bundle)`：原方法执行完后弹出 Toast `Module loaded`。
+  - VIP 判断：DexKit 按结构定位 `public static boolean`、无参数、读取 `ai.blurrr.video.user.model.VipStatus.DEFAULT`
+    的方法（当前版本为 `s3.m#j()`），hook 后恒返回 `true`；DexKit 未命中时回退到硬编码的 `s3.m#j`。
+- 后续 hook 按同样方式写在 `BlurrrHooker` 中即可；`/smali/` 为反编译临时产物，已加入 `.gitignore`。
 - 未开启 `autoHotReload`，如需热重载请实现 `onHotReloaded` 并同步修改 `module.prop`。
 - 发布版开启了 R8（`minifyEnabled` / `shrinkResources`），ProGuard 规则见 `app/proguard-rules.pro`。
 

@@ -8,10 +8,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.luckypray.dexkit.DexKitBridge;
-import org.luckypray.dexkit.query.FindClass;
-import org.luckypray.dexkit.result.ClassDataList;
+import org.luckypray.dexkit.query.FindMethod;
+import org.luckypray.dexkit.query.matchers.MethodMatcher;
+import org.luckypray.dexkit.query.matchers.UsingFieldMatcher;
+import org.luckypray.dexkit.result.MethodData;
+import org.luckypray.dexkit.result.MethodDataList;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import io.github.libxposed.api.XposedModule;
 import io.github.libxposed.api.XposedModuleInterface;
@@ -26,6 +30,17 @@ final class BlurrrHooker {
     private static final String TARGET_ACTIVITY = ModuleMain.TARGET_PACKAGE + ".MainActivity";
 
     private static final String TOAST_TEXT = "Module loaded";
+
+    /**
+     * VIP 状态枚举，未被混淆，作为 DexKit 定位的锚点。
+     */
+    private static final String VIP_STATUS_CLASS = "ai.blurrr.video.user.model.VipStatus";
+
+    /**
+     * 当前版本的兜底位置：s3.m#j()Z。混淆名随版本变化，仅当 DexKit 定位失败时使用。
+     */
+    private static final String VIP_CHECK_FALLBACK_CLASS = "s3.m";
+    private static final String VIP_CHECK_FALLBACK_METHOD = "j";
 
     private static boolean sInstalled = false;
 
@@ -48,24 +63,92 @@ final class BlurrrHooker {
         module.log(Log.INFO, TAG, "apk = " + apkPath);
         module.log(Log.INFO, TAG, "classLoader = " + classLoader);
 
-        dumpDexKitInfo(module, apkPath);
+        Method vipCheck = null;
+        try (DexKitBridge bridge = DexKitBridge.create(apkPath)) {
+            module.log(Log.INFO, TAG, "dex count = " + bridge.getDexNum());
+            vipCheck = findVipCheckMethod(module, bridge, classLoader);
+        } catch (Throwable tr) {
+            module.log(Log.ERROR, TAG, "DexKit lookup failed", tr);
+        }
+
+        if (vipCheck == null) {
+            vipCheck = fallbackVipCheck(module, classLoader);
+        }
+        if (vipCheck != null) {
+            hookVipCheck(module, vipCheck);
+        } else {
+            module.log(Log.ERROR, TAG, "vip check method not found, skip");
+        }
+
         hookMainActivity(module, classLoader);
     }
 
     /**
-     * 用 DexKit 解析一遍目标 APK，确认 native 库与 dex 解析链路正常。
+     * 用 DexKit 按结构定位 VIP 判断方法：
+     * <pre>
+     * public static boolean j() {
+     *     d f2 = f();
+     *     return f2.a != VipStatus.DEFAULT &amp;&amp; b.z(f2);
+     * }
+     * </pre>
+     * 特征：public static、返回 boolean、无参数、读取 {@link #VIP_STATUS_CLASS} 的 DEFAULT 常量。
      */
-    private static void dumpDexKitInfo(XposedModule module, String apkPath) {
-        try (DexKitBridge bridge = DexKitBridge.create(apkPath)) {
-            module.log(Log.INFO, TAG, "dex count = " + bridge.getDexNum());
+    private static Method findVipCheckMethod(XposedModule module, DexKitBridge bridge, ClassLoader classLoader) {
+        UsingFieldMatcher readVipDefault = UsingFieldMatcher.create()
+                .declaredClass(VIP_STATUS_CLASS)
+                .name("DEFAULT")
+                .type(VIP_STATUS_CLASS);
 
-            ClassDataList classes = bridge.findClass(FindClass.create().searchPackages(ModuleMain.TARGET_PACKAGE));
-            module.log(Log.INFO, TAG, "classes in " + ModuleMain.TARGET_PACKAGE + " = " + classes.size());
-            for (int i = 0; i < Math.min(classes.size(), 10); i++) {
-                module.log(Log.INFO, TAG, "  " + classes.get(i).getName());
-            }
+        MethodMatcher matcher = MethodMatcher.create()
+                .modifiers(Modifier.PUBLIC | Modifier.STATIC)
+                .returnType("boolean")
+                .paramCount(0)
+                .addUsingField(readVipDefault);
+
+        MethodDataList candidates = bridge.findMethod(FindMethod.create().matcher(matcher));
+        module.log(Log.INFO, TAG, "vip check candidates = " + candidates.size());
+        for (int i = 0; i < Math.min(candidates.size(), 5); i++) {
+            MethodData data = candidates.get(i);
+            module.log(Log.INFO, TAG, "  candidate: " + data.getClassName() + "#" + data.getName());
+        }
+        if (candidates.isEmpty()) {
+            return null;
+        }
+
+        MethodData target = candidates.get(0);
+        module.log(Log.INFO, TAG, "DexKit located " + target.getClassName() + "#" + target.getName());
+        try {
+            return target.getMethodInstance(classLoader);
         } catch (Throwable tr) {
-            module.log(Log.ERROR, TAG, "DexKit init failed", tr);
+            module.log(Log.ERROR, TAG, "failed to resolve " + target.getClassName() + "#" + target.getName(), tr);
+            return null;
+        }
+    }
+
+    private static Method fallbackVipCheck(XposedModule module, ClassLoader classLoader) {
+        try {
+            Class<?> clazz = Class.forName(VIP_CHECK_FALLBACK_CLASS, false, classLoader);
+            Method method = clazz.getDeclaredMethod(VIP_CHECK_FALLBACK_METHOD);
+            module.log(Log.WARN, TAG, "fallback to " + VIP_CHECK_FALLBACK_CLASS + "#" + VIP_CHECK_FALLBACK_METHOD);
+            return method;
+        } catch (Throwable tr) {
+            module.log(Log.ERROR, TAG, "fallback lookup failed", tr);
+            return null;
+        }
+    }
+
+    /**
+     * 直接返回 true，跳过原方法（VIP 判断恒为真）。
+     */
+    private static void hookVipCheck(XposedModule module, Method method) {
+        try {
+            module.hook(method).intercept(chain -> {
+                module.log(Log.INFO, TAG, "force " + method.getName() + "() -> true");
+                return Boolean.TRUE;
+            });
+            module.log(Log.INFO, TAG, "hooked " + method + " -> true");
+        } catch (Throwable tr) {
+            module.log(Log.ERROR, TAG, "failed to hook " + method, tr);
         }
     }
 
