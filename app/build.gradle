@@ -48,5 +48,8 @@ android {
 dependencies {
     // 运行时由框架提供，不能打包进 APK
     compileOnly libs.libxposed.api
-    implementation libs.dexkit
+    implementation(libs.dexkit) {
+        // libdexkit.so 没有依赖 libc++_shared.so，去掉多余的 native 运行时
+        exclude group: 'dev.rikka.ndk.thirdparty', module: 'cxx'
+    }
 }
