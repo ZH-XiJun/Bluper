@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = 'com.wtbruh.blurrr'
-        minSdk = 26
+        minSdk = 29
         targetSdk = 37
         versionCode = 1
         versionName = '1.0'
@@ -29,10 +29,6 @@ android {
     }
 
     packaging {
-        // 让 libdexkit.so 以可解压方式打进 APK，模块被注入目标进程后才能被加载
-        jniLibs {
-            useLegacyPackaging = true
-        }
         resources {
             excludes += [
                     'META-INF/LICENSE*',
