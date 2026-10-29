@@ -21,7 +21,7 @@
 
 - 点小图标下载：![GitHub Release](https://img.shields.io/github/v/release/ZH-XiJun/com.wtbruh.blurrr?include_prereleases)
 
-- 或者下CI版，需要登录GitHub： [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zh-xijun/com.wtbruh.blurrr/android.yml)](https://github.com/zh-xijun/fakelauncher/actions/workflows/android.yml)
+- 或者下CI版，需要登录GitHub： [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zh-xijun/com.wtbruh.blurrr/android.yml)](https://github.com/zh-xijun/com.wtbruh.blurrr/actions/workflows/android.yml)
 
 - 使用最新的[LSPosed](https://github.com/lsposed/lsposed)/[Vector](https://github.com/jingmatrix/vector)框架激活它。（[NPatch](https://github.com/HSSkyBoy/NPatch)/[LSPatch](https://github.com/lsposed/lspatch)兼容性未知）
 
