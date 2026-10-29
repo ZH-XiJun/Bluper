@@ -31,7 +31,7 @@ Then I tried Blurrr, which, however, needs SVIP to be purchased to unlock all fe
 
 ## Build
 
-*Just build it as a normal android aop!*
+*Dude, just build it as a normal android app!*
 
 ```bash
 ./gradlew :app:assembleDebug
