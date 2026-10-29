@@ -3,7 +3,7 @@
 
   APP ICON TODO
   
-## Bluper ![GitHub Release](https://img.shields.io/github/v/release/ZH-XiJun/com.wtbruh.blurrr?include_prereleases)
+## Bluper [![GitHub Release](https://img.shields.io/github/v/release/ZH-XiJun/bluper?include_prereleases)](https://github.com/zh-xijun/bluper/releases)
 
 *bl**UPER** - s**UPER** **BLU**rr**R***
 
@@ -19,9 +19,9 @@ Then I tried Blurrr, which, however, needs SVIP to be purchased to unlock all fe
 
 ## How to use
 
-- Download release version, just click the badge: ![GitHub Release](https://img.shields.io/github/v/release/ZH-XiJun/com.wtbruh.blurrr?include_prereleases)
+- Download release version, just click the badge: [![GitHub Release](https://img.shields.io/github/v/release/ZH-XiJun/bluper?include_prereleases)](https://github.com/zh-xijun/bluper/releases)
 
-- Or download CI version, which requires GitHub account to be logged in: [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zh-xijun/com.wtbruh.blurrr/android.yml)](https://github.com/zh-xijun/com.wtbruh.blurrr/actions/workflows/android.yml)
+- Or download CI version, which requires GitHub account to be logged in: [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zh-xijun/bluper/android.yml)](https://github.com/zh-xijun/bluper/actions/workflows/android.yml)
 
 - Activate the module. Use latest [LSPosed](https://github.com/lsposed/lsposed)/[Vector](https://github.com/jingmatrix/vector) framework (The capability of [NPatch](https://github.com/HSSkyBoy/NPatch)/[LSPatch](https://github.com/lsposed/lspatch) is unknown)
 
@@ -39,4 +39,4 @@ Then I tried Blurrr, which, however, needs SVIP to be purchased to unlock all fe
 
 APK output path: `app/build/outputs/apk/debug/app-debug.apk`。
 
-[Github Actions](httos://github.com/zh-xijun/com.wtbruh.blurrr/actions) is available too.
+[Github Actions](https://github.com/zh-xijun/bluper/actions) is available too.
