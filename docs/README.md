@@ -5,9 +5,11 @@
   
 ## Bluper ![GitHub Release](https://img.shields.io/github/v/release/ZH-XiJun/com.wtbruh.blurrr?include_prereleases)
 
-*啊Sir，仅供学习研究交流啊，技术无罪！*
+*bl**UPER** - s**UPER** **BLU**rr**R***
 
 **帮助用户稍微体验一下Blurrr的SVIP功能。记得24小时内删除哦**
+
+[Say English](README-EN.md)
 
 </div>
 
