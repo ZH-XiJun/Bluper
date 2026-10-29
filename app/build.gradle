@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    namespace = 'com.wtbruh.blurrr'
+    namespace = 'io.github.zh_xijun.bluper'
     compileSdk = 37
     buildToolsVersion = '37.0.0'
 
     defaultConfig {
-        applicationId = 'com.wtbruh.blurrr'
+        applicationId = 'io.github.zh_xijun.bluper'
         minSdk = 29
         targetSdk = 37
         versionCode = 1

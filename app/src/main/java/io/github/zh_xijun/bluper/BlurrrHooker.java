@@ -1,4 +1,4 @@
-package com.wtbruh.blurrr;
+package io.github.zh_xijun.bluper;
 
 import android.app.Activity;
 import android.os.Bundle;
